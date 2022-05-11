@@ -1,0 +1,96 @@
+# Zathura configuration file
+
+# Open document in fit-width mode by default
+set adjust-open "best-fit"
+
+# Clipboard set to normal clipboard
+set selection-clipboard "clipboard"
+
+# One page per row by default
+set pages-per-row 1
+
+# stop at page boundries
+set scroll-page-aware true
+
+# set smooth-scroll true
+set scroll-full-overlap 0.01
+set scroll-step 100
+
+#zoom settings
+set zoom-min 10
+set guioptions ""
+
+# zathurarc-dark
+
+set font "Iosevka 15"
+# set default-bg "#1e1e1e" #00
+# set default-fg "#d4d4d4" #01
+# 
+# set statusbar-fg "#B0B0B0" #04
+# set statusbar-bg "#202020" #01
+# 
+# set inputbar-bg "#151515" #00 currently not used
+# set inputbar-fg "#FFFFFF" #02
+# 
+# set notification-error-bg "#AC4142" #08
+# set notification-error-fg "#151515" #00
+# 
+# set notification-warning-bg "#AC4142" #08
+# set notification-warning-fg "#151515" #00
+# 
+# set highlight-color "#F4BF75" #0A
+# set highlight-active-color "#6A9FB5" #0D
+# 
+# set completion-highlight-fg "#151515" #02
+# set completion-highlight-bg "#90A959" #0C
+# 
+# set completion-bg "#303030" #02
+# set completion-fg "#E0E0E0" #0C
+# 
+# set notification-bg "#90A959" #0B
+# set notification-fg "#151515" #00
+
+# vscode dark zathura colorscheme
+
+set default-bg                  "#1e1e1e"
+set default-fg                  "#d4d4d4"
+
+set statusbar-bg                "#1e1e1e"
+set statusbar-fg                "#808080"
+
+set inputbar-bg                 "#1e1e1e"
+set inputbar-fg                 "#d4d4d4"
+
+set notification-error-bg       "#1e1e1e"
+set notification-error-fg       "#f44747"
+
+set notification-warning-bg     "#1e1e1e"
+set notification-warning-fg     "#d7ba7d"
+
+set highlight-color             "#007acc"
+set highlight-active-color      "#d4d4d4"
+
+set completion-highlight-fg     "#56b6c2"
+set completion-highlight-bg     false
+
+set completion-bg               "#1e1e1e"
+set completion-fg               "#d4d4d4"
+
+set notification-bg             "#1e1e1e"
+set notification-fg             "#d4d4d4"
+
+set recolor true
+set recolor-lightcolor          "#1e1e1e"
+set recolor-darkcolor           "#d4d4d4"
+
+set index-fg                    "#d4d4d4"
+set index-bg                    "#1e1e1e"
+
+set index-active-fg             "#56b6c2"
+set index-active-bg             false
+
+# set recolor-reverse-video true
+set recolor-keephue true
+
+set render-loading false
+set scroll-step 50

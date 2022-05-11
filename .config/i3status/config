@@ -1,0 +1,80 @@
+# i3status configuration file.
+# see "man i3status" for documentation.
+
+# It is important that this file is edited as UTF-8.
+# The following line should contain a sharp s:
+# ß
+# If the above line is not correctly displayed, fix your editor first!
+
+general {
+	markup = pango
+	colors = true
+	interval = 5
+}
+
+# order += "ipv6"
+# order += "wireless _first_"
+# order += "ethernet _first_"
+order += "battery all"
+order += "volume master"
+order += "read_file brightness"
+order += "disk /"
+order += "disk /mnt/sda4/"
+# order += "load"
+# order += "memory"
+order += "tztime date"
+order += "tztime time"
+
+wireless _first_ {
+	format_up = "W: (%quality at %essid) %ip"
+	format_down = "W: down"
+}
+
+ethernet _first_ {
+	format_up = "E: %ip (%speed)"
+	format_down = "E: down"
+}
+
+battery all {
+	last_full_capacity = true
+	format = "<span color='#3e729a'>BATTERY:</span> %percentage"
+}
+
+volume master {
+	format = "<span color='#3e729a'>VOLUME:</span> %volume"
+	format_muted = "VOLUME: muted (%volume)"
+	device = "default"
+	mixer = "Master"
+	mixer_idx = 0
+}
+
+read_file brightness {
+	format = "<span color='#3e729a'>BRIGHTNESS:</span> <span color='#ffffff'>%content%</span>"
+	path = "/home/beast/.cache/brightness"
+}
+
+disk "/" {
+	format = "<span color='#3e729a'>ROOT:</span> %avail"
+}
+
+disk "/mnt/sda4/" {
+	format = "<span color='#3e729a'>SDA4:</span> %avail"
+}
+
+load {
+	format = "<span color='#3e729a'>CPU:</span> %1min"
+}
+
+memory {
+	format = "<span color='#3e729a'>MEM:</span> %used"
+	threshold_degraded = "1G"
+	format_degraded = "MEMORY < %available"
+}
+
+tztime date {
+	format = "<span color='#3e729a'>DATE:</span> %A, %d/%m/%Y"
+}
+
+tztime time {
+	format = "<span color='#3e729a'>TIME:</span> %I:%M"
+}
