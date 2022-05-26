@@ -23,6 +23,8 @@ Plug 'nvim-telescope/telescope.nvim' " fuzzy_finder
 Plug 'nvim-lua/popup.nvim'
 Plug 'jvgrootveld/telescope-zoxide' " change_directory
 Plug 'mhartington/formatter.nvim'
+Plug 'windwp/nvim-autopairs'
+Plug 'numToStr/Comment.nvim'
 
 call plug#end()
 
@@ -66,7 +68,7 @@ set splitbelow
 
 inoremap jk <esc>
 inoremap <M-v> "+p
-nnoremap <M-v> "+p
+nnoremap <M-v> "+p
 vnoremap <M-c> "+y
 nnoremap <silent><tab> :bn!<cr>
 nnoremap <silent><S-tab> :bp!<cr>
@@ -119,7 +121,7 @@ nnoremap <silent><leader><bs> :silent! call ResetFontSize()<cr>
 
 " lsp_config {{{
 lua <<EOF
-local servers = { 'pyright', 'clangd', 'tsserver', 'sumneko_lua' }
+local servers = { 'pyright', 'ccls', 'tsserver', 'sumneko_lua' }
 
 require("nvim-lsp-installer").setup({
     ensure_installed = servers,
@@ -481,11 +483,13 @@ gls.left[2] = {
     ViMode = {
         provider = function()
             local mode_text = {
-                n = 'NOR',
-                i = 'INS',
-                V = 'VIS',
-                R = 'RPL',
-                c = 'CMD',
+                n      = 'NOR',
+                i      = 'INS',
+                V      = 'VIS',
+                v      = 'VIS',
+                R      = 'RPL',
+                c      = 'CMD',
+                [''] = 'VIB'
             }
 
             return mode_text[vim.fn.mode()]
@@ -685,6 +689,9 @@ require'nvim-treesitter.configs'.setup {
 
 -- nvim-colorizer settings
 require'colorizer'.setup()
+
+-- treesitter autopairs
+require("nvim-treesitter.configs").setup { autopairs = { enable = true } }
 EOF
 "}}}
 
@@ -782,7 +789,7 @@ require("toggleterm").setup {
     float_opts = {
         border = 'curved',
         width = 150,
-        height = 25,
+        height = 20,
         winblend = 2,
     }
 }
@@ -912,6 +919,56 @@ require('formatter').setup({
             end
         },
     }
+})
+EOF
+" }}}
+
+" nvim-autopairs {{{
+lua <<EOF
+require('nvim-autopairs').setup({
+    check_ts = true,
+    ts_config = {
+        lua = { "string", "source" },
+        javascript = { "string", "template_string" },
+        java = false,
+    },
+    fast_wrap = {
+        map = [[<M-e>]]
+    },
+})
+
+local cmp_autopairs = require('nvim-autopairs.completion.cmp')
+local cmp = require('cmp')
+cmp.event:on( 'confirm_done', cmp_autopairs.on_confirm_done({  map_char = { tex = '' } }))
+EOF
+" }}}
+
+" comment_nvim {{{
+lua <<EOF
+require('Comment').setup({
+    padding = true,
+    sticky = true,
+    ignore = nil,
+    toggler = {
+        line = 'gcc',
+        block = 'gbc',
+    },
+    opleader = {
+        line = 'gc',
+        block = 'gb',
+    },
+    extra = {
+        above = 'gcO',
+        below = 'gco',
+        eol = 'gcA',
+    },
+    mappings = {
+        basic = true,
+        extra = true,
+        extended = false,
+    },
+    pre_hook = nil,
+    post_hook = nil,
 })
 EOF
 " }}}
