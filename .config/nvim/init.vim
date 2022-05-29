@@ -121,7 +121,7 @@ nnoremap <silent><leader><bs> :silent! call ResetFontSize()<cr>
 
 " lsp_config {{{
 lua <<EOF
-local servers = { 'pyright', 'ccls', 'tsserver', 'sumneko_lua' }
+local servers = { 'pyright', 'clangd', 'tsserver', 'sumneko_lua' }
 
 require("nvim-lsp-installer").setup({
     ensure_installed = servers,
@@ -489,7 +489,7 @@ gls.left[2] = {
                 v      = 'VIS',
                 R      = 'RPL',
                 c      = 'CMD',
-                [''] = 'VIB'
+                [''] = 'VBL'
             }
 
             return mode_text[vim.fn.mode()]
@@ -816,6 +816,8 @@ EOF
 
 " formatter {{{
 lua <<EOF
+local cstyle = '-style="{BasedOnStyle: Microsoft, IndentWidth: 4, BraceWrapping: {AfterControlStatement: Never, AfterStruct: false}, ColumnLimit: 0, Cpp11BracedListStyle: false}"'
+
 require('formatter').setup({
     filetype = {
         javascript = {
@@ -879,7 +881,7 @@ require('formatter').setup({
             function()
                 return {
                     exe = "clang-format",
-                    args = {"--assume-filename", vim.api.nvim_buf_get_name(0), '-style="{IndentWidth: 4}"'},
+                    args = {"--assume-filename", vim.api.nvim_buf_get_name(0), cstyle},
                     stdin = true,
                     cwd = vim.fn.expand('%:p:h')  -- Run clang-format in cwd of the file.
                 }
@@ -890,7 +892,7 @@ require('formatter').setup({
             function()
                 return {
                     exe = "clang-format",
-                    args = {"--assume-filename", vim.api.nvim_buf_get_name(0), '-style="{IndentWidth: 4}"'},
+                    args = {"--assume-filename", vim.api.nvim_buf_get_name(0), cstyle},
                     stdin = true,
                     cwd = vim.fn.expand('%:p:h')  -- Run clang-format in cwd of the file.
                 }
@@ -901,7 +903,7 @@ require('formatter').setup({
             function()
                 return {
                     exe = "clang-format",
-                    args = {"--assume-filename", vim.api.nvim_buf_get_name(0), '-style="{IndentWidth: 4}"'},
+                    args = {"--assume-filename", vim.api.nvim_buf_get_name(0), cstyle},
                     stdin = true,
                     cwd = vim.fn.expand('%:p:h')  -- Run clang-format in cwd of the file.
                 }
@@ -912,7 +914,7 @@ require('formatter').setup({
             function()
                 return {
                     exe = "clang-format",
-                    args = {"--assume-filename", vim.api.nvim_buf_get_name(0), '-style="{IndentWidth: 4}"'},
+                    args = {"--assume-filename", vim.api.nvim_buf_get_name(0), cstyle},
                     stdin = true,
                     cwd = vim.fn.expand('%:p:h')  -- Run clang-format in cwd of the file.
                 }
