@@ -15,8 +15,9 @@ Plug 'hrsh7th/cmp-buffer'
 Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/cmp-emoji'
 Plug 'hrsh7th/nvim-cmp' " completion_menu
-Plug 'L3MON4D3/LuaSnip'
-Plug 'saadparwaiz1/cmp_luasnip' " snippet_engine
+Plug 'hrsh7th/vim-vsnip' " snippet engine
+Plug 'hrsh7th/vim-vsnip-integ'
+Plug 'hrsh7th/cmp-vsnip'
 Plug 'norcalli/nvim-colorizer.lua' " colorizer
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim' " fuzzy_finder
@@ -40,6 +41,7 @@ set number
 set relativenumber
 set numberwidth=2
 set nowrap
+set nocompatible
 set expandtab
 set undofile
 set undodir=~/.config/nvim/undodir
@@ -57,6 +59,7 @@ set ignorecase
 set smartcase
 set updatetime=300
 set title
+set conceallevel=2
 set pumheight=10
 set fillchars=eob:\ 
 set timeoutlen=400
@@ -79,6 +82,7 @@ nnoremap <silent><leader>w <C-w>
 nnoremap <silent><leader>gd :silent! Gitsigns diffthis<cr>
 nnoremap <silent><leader>gj :silent! Gitsigns next_hunk<cr>
 nnoremap <silent><leader>gk :silent! Gitsigns prev_hunk<cr>
+nnoremap <silent><leader>gr :silent! Gitsigns reset_hunk<cr>
 
 " telescope mappings
 nnoremap <silent><leader>ff :silent! Telescope find_files theme=dropdown<cr>
@@ -92,6 +96,12 @@ nnoremap <silent><leader>fM :silent! Telescope man_pages theme=dropdown<cr>
 
 " formatter mappings
 nnoremap <silent><leader>fm :silent! Format<cr>
+
+" vsnip settings
+let g:vsnip_snippet_dir = '~/.config/nvim/snippets'
+
+" vsnip mappings
+nnoremap <silent><leader>se :VsnipOpen<cr>
 
 " neovide settings
 let g:neovide_cursor_antialiasing=v:true
@@ -205,8 +215,16 @@ EOF
 
 " nvim_cmp {{{
 lua <<EOF
+    local has_words_before = function()
+        local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+        return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+    end
+
+    local feedkey = function(key, mode)
+        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
+    end
+
     local cmp = require'cmp'
-    local luasnip = require'luasnip'
 
     kind_icons = {
         Class = " ",
@@ -239,12 +257,11 @@ lua <<EOF
     source_names = {
         -- cmp_tabnine = "(Tabnine)",
         -- tmux = "(TMUX)",
-        -- vsnip = "(Snippet)",
         nvim_lsp = "(LSP)",
         emoji = "(Emoji)",
         path = "(Path)",
         calc = "(Calc)",
-        luasnip = "(Snippet)",
+        vsnip = "(Snippet)",
         buffer = "(Buffer)",
     }
 
@@ -273,7 +290,7 @@ lua <<EOF
 
         snippet = {
             expand = function(args)
-                luasnip.lsp_expand(args.body)
+                vim.fn["vsnip#anonymous"](args.body)
             end,
         },
 
@@ -291,29 +308,29 @@ lua <<EOF
             ['<C-d>'] = cmp.mapping.scroll_docs(4),
             ['<C-Space>'] = cmp.mapping.complete(),
             ['<CR>'] = cmp.mapping.confirm({ select = false }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
-            ['<Tab>'] = cmp.mapping(function(fallback)
+            ["<Tab>"] = cmp.mapping(function(fallback)
                 if cmp.visible() then
                     cmp.select_next_item()
-                elseif luasnip.expand_or_jumpable() then
-                    luasnip.expand_or_jump()
+                elseif vim.fn["vsnip#available"](1) == 1 then
+                    feedkey("<Plug>(vsnip-expand-or-jump)", "")
+                elseif has_words_before() then
+                    cmp.complete()
                 else
                     fallback()
                 end
-            end, { 'i', 's' }),
-            ['<S-Tab>'] = cmp.mapping(function(fallback)
+            end, { "i", "s" }),
+            ["<S-Tab>"] = cmp.mapping(function()
                 if cmp.visible() then
                     cmp.select_prev_item()
-                elseif luasnip.jumpable(-1) then
-                    luasnip.jump(-1)
-                else
-                    fallback()
+                elseif vim.fn["vsnip#jumpable"](-1) == 1 then
+                    feedkey("<Plug>(vsnip-jump-prev)", "")
                 end
-            end, { 'i', 's' }),
+            end, { "i", "s" }),
         }),
 
         sources = cmp.config.sources({
             { name = 'nvim_lsp' },
-            { name = 'luasnip' },
+            { name = 'vsnip' },
         }, {
             { name = 'buffer' },
             { name = 'path' },
@@ -816,7 +833,7 @@ EOF
 
 " formatter {{{
 lua <<EOF
-local cstyle = '-style="{BasedOnStyle: Microsoft, IndentWidth: 4, BraceWrapping: {AfterControlStatement: Never, AfterStruct: false}, ColumnLimit: 0, Cpp11BracedListStyle: false}"'
+local cstyle = '-style="{BasedOnStyle: Microsoft, IndentWidth: 4, BraceWrapping: {AfterControlStatement: Never, AfterStruct: false}, ColumnLimit: 0, Cpp11BracedListStyle: false, IndentCaseLabels: true, IndentCaseBlocks: true}"'
 
 require('formatter').setup({
     filetype = {

@@ -1,0 +1,11 @@
+{
+    "TODO": {
+        "prefix": ["todo"],
+        "body": [
+            "TODO:",
+            "",
+            "\t- [ ] $0"
+        ],
+        "description": "todo skeleton"
+    }
+}
